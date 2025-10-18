@@ -20,8 +20,8 @@ def setup_logging():
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Generate training data for probes')
     parser.add_argument('--layer', required=True, default=-1, type=int)
-    parser.add_argument('--random', dest='random', action='store_true')
-    parser.add_argument('--championship', dest='championship', action='store_true')
+    parser.add_argument('--mode', required=True, choices=['random', 'championship', 'synthetic'],
+                        help="Mode of operation: random, championship, or synthetic")
     parser.add_argument('--exp', default="state", type=str)
     parser.add_argument('--ckpts_path', default="./ckpts", type=str, help="Path to the checkpoints directory")
     parser.add_argument('--output_dir', default="training_data", type=str, help="Path to the output directory")
@@ -39,10 +39,10 @@ def load_model(args, train_dataset):
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # load checkpoints with correct map_location
-    if args.random:
+    if args.mode == 'random':
         model.apply(model._init_weights)
     else:
-        ckpt_name = "gpt_championship.ckpt" if args.championship else "gpt_synthetic.ckpt"
+        ckpt_name = "gpt_championship.ckpt" if args.mode == 'championship' else "gpt_synthetic.ckpt"
         ckpt_path = Path(args.ckpts_path) / ckpt_name
         if ckpt_path.exists():
             state = torch.load(ckpt_path, map_location=device)
