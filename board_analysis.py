@@ -27,8 +27,7 @@ output_heatmap = f"{output_prefix}_heatmap.png"
 output_by_move = f"{output_prefix}_by_move.png"
 
 exp = f"state_tl{mid_dim}"
-if mode in ("championship", "random"):
-    exp += f"_{mode}"
+exp += f"_{mode}"
 
 # %%
 probe = BatteryProbeClassificationTwoLayer('cpu', probe_class=3, num_task=64, mid_dim=mid_dim)
